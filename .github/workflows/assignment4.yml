@@ -16,24 +16,20 @@ jobs:
           cache: maven
       
       - name: Build stocks service with Maven
-        run: |
-          cd stocks
-          mvn clean package -DskipTests
+        working-directory: ./stocks
+        run: mvn clean package -DskipTests
       
       - name: Build capital gains service with Maven
-        run: |
-          cd capitalgains
-          mvn clean package -DskipTests
+        working-directory: ./capitalgains
+        run: mvn clean package -DskipTests
       
       - name: Build stocks service Docker image
-        run: |
-          cd stocks
-          docker build -t stocks-service .
+        working-directory: ./stocks
+        run: docker build -t stocks-service .
       
       - name: Build capital gains service Docker image
-        run: |
-          cd capitalgains
-          docker build -t capital-gains-service .
+        working-directory: ./capitalgains
+        run: docker build -t capital-gains-service .
       
       - name: Save Docker images
         run: |
