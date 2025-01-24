@@ -61,6 +61,7 @@ jobs:
         with:
           name: logs
           path: log.txt
+          overwrite: true
 
   test:
     needs: build
@@ -126,6 +127,7 @@ jobs:
         with:
           name: logs
           path: log.txt
+          overwrite: true
       
       - name: Stop services
         if: always()
@@ -182,6 +184,7 @@ jobs:
         with:
           name: logs
           path: log.txt
+          overwrite: true
       
       - name: Stop services
         if: always()
