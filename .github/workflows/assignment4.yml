@@ -59,7 +59,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: build-log
+          name: logs
           path: log.txt
 
   test:
@@ -68,10 +68,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Download build log
+      - name: Download log
         uses: actions/download-artifact@v4
         with:
-          name: build-log
+          name: logs
           
       - name: Download Docker images
         uses: actions/download-artifact@v4
@@ -124,7 +124,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: test-log
+          name: logs
           path: log.txt
       
       - name: Stop services
@@ -137,10 +137,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Download test log
+      - name: Download log
         uses: actions/download-artifact@v4
         with:
-          name: test-log
+          name: logs
           
       - name: Download Docker images
         uses: actions/download-artifact@v4
@@ -180,7 +180,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: final-log
+          name: logs
           path: log.txt
       
       - name: Stop services
