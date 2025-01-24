@@ -25,16 +25,16 @@ jobs:
       
       - name: Build stocks service Docker image
         working-directory: ./stocks
-        run: docker build -t stocks1 .
+        run: docker build -t ci-cd-stocks1 .
       
       - name: Build capital gains service Docker image
         working-directory: ./capitalgains
-        run: docker build -t capital-gains .
+        run: docker build -t ci-cd-capital-gains .
       
       - name: Save Docker images
         run: |
-          docker save stocks1 > stocks-service.tar
-          docker save capital-gains > capital-gains-service.tar
+          docker save ci-cd-stocks1 > stocks-service.tar
+          docker save ci-cd-capital-gains > capital-gains-service.tar
       
       - name: Upload Docker images as artifacts
         uses: actions/upload-artifact@v4
