@@ -11,7 +11,7 @@ jobs:
       - name: Start logging
         run: |
           echo "$(date -Iminutes)" > log.txt
-          echo "Idan Lipschitz" >> log.txt
+          echo "Idan Lipschitz, Shahar Shvili" >> log.txt
       
       - name: Set up JDK 17
         uses: actions/setup-java@v4
