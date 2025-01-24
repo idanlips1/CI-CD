@@ -87,24 +87,32 @@ public class CapitalGainService {
 
     private float getCurrentPrice(String serviceUrl, String stockId) throws Exception {
         logger.info("Getting current price from {}/stock-value/{}", serviceUrl, stockId);
-        ResponseEntity<String> response = restTemplate.exchange(
-            serviceUrl + "/stock-value/" + stockId,
-            HttpMethod.GET,
-            HttpEntity.EMPTY,
-            String.class
-        );
-        
-        if (response.getBody() == null) {
-            throw new RuntimeException("Empty response from stock service");
+        try {
+            ResponseEntity<String> response = restTemplate.exchange(
+                serviceUrl + "/stock-value/" + stockId,
+                HttpMethod.GET,
+                HttpEntity.EMPTY,
+                String.class
+            );
+            
+            if (response.getBody() == null) {
+                logger.error("Empty response from stock service for stock ID: {}", stockId);
+                throw new RuntimeException("Empty response from stock service");
+            }
+            
+            JsonNode jsonNode = objectMapper.readTree(response.getBody());
+            logger.info("Response from stock service: {}", response.getBody());
+            
+            JsonNode tickerValue = jsonNode.get("ticker");
+            if (tickerValue == null) {
+                logger.error("Invalid response format for stock ID {}: {}", stockId, response.getBody());
+                throw new RuntimeException("Invalid response format from stock service");
+            }
+            
+            return tickerValue.floatValue();
+        } catch (Exception e) {
+            logger.error("Error getting current price for stock {}: {}", stockId, e.getMessage());
+            throw new RuntimeException("Could not get current price for stock " + stockId + ": " + e.getMessage());
         }
-        
-        JsonNode jsonNode = objectMapper.readTree(response.getBody());
-        JsonNode tickerValue = jsonNode.get("ticker");
-        if (tickerValue == null) {
-            logger.error("Invalid response format: {}", response.getBody());
-            throw new RuntimeException("Invalid response format from stock service");
-        }
-        
-        return tickerValue.floatValue();
     }
 }

@@ -58,9 +58,25 @@ public class StockController {
     }
 
     @GetMapping("/stocks")
-    public ResponseEntity getStocks() {
+    public ResponseEntity getStocks(
+        @RequestParam(required = false) String symbol,
+        @RequestParam(required = false) String name,
+        @RequestParam(required = false) Float purchase_price,
+        @RequestParam(required = false) String purchase_date,
+        @RequestParam(required = false) Integer shares
+    ) {
         try {
-            return new ResponseEntity<>(stockService.getAllStocks(), HttpStatus.OK);
+            Map<String, Object> filters = new HashMap<>();
+            if (symbol != null) filters.put("symbol", symbol);
+            if (name != null) filters.put("name", name);
+            if (purchase_price != null) filters.put("purchase_price", purchase_price);
+            if (purchase_date != null) filters.put("purchase_date", purchase_date);
+            if (shares != null) filters.put("shares", shares);
+
+            if (filters.isEmpty()) {
+                return new ResponseEntity<>(stockService.getAllStocks(), HttpStatus.OK);
+            }
+            return new ResponseEntity<>(stockService.getStocksWithFilters(filters), HttpStatus.OK);
         } catch (Exception e) {
             Map<String, String> errorResponse = Map.of("server error", e.getMessage());
             return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);

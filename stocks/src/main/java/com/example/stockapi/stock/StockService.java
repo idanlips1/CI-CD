@@ -1,6 +1,7 @@
 package com.example.stockapi.stock;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -119,6 +120,36 @@ public class StockService {
 
     public PortfolioValueResponse getPortfolio() throws Exception{
         return new PortfolioValueResponse(getPortfolioValue());
+    }
+
+    public List<Stock> getStocksWithFilters(Map<String, Object> filters) {
+        List<Stock> allStocks = getAllStocks();
+        return allStocks.stream()
+            .filter(stock -> matchesFilters(stock, filters))
+            .collect(Collectors.toList());
+    }
+
+    private boolean matchesFilters(Stock stock, Map<String, Object> filters) {
+        for (Map.Entry<String, Object> filter : filters.entrySet()) {
+            switch (filter.getKey()) {
+                case "symbol":
+                    if (!stock.getSymbol().equals(filter.getValue())) return false;
+                    break;
+                case "name":
+                    if (!stock.getName().equals(filter.getValue())) return false;
+                    break;
+                case "purchase_price":
+                    if (stock.getPrice() != ((Number) filter.getValue()).floatValue()) return false;
+                    break;
+                case "purchase_date":
+                    if (!stock.getPurchaseDate().equals(filter.getValue())) return false;
+                    break;
+                case "shares":
+                    if (stock.getShares() != ((Number) filter.getValue()).intValue()) return false;
+                    break;
+            }
+        }
+        return true;
     }
 
 }
