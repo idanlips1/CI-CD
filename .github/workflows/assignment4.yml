@@ -47,11 +47,6 @@ jobs:
   test:
     needs: build
     runs-on: ubuntu-24.04
-    services:
-      mongo:
-        image: mongo:5.0
-        ports:
-          - 27017:27017
     steps:
       - uses: actions/checkout@v4
       
@@ -97,11 +92,6 @@ jobs:
   query:
     needs: test
     runs-on: ubuntu-24.04
-    services:
-      mongo:
-        image: mongo:5.0
-        ports:
-          - 27017:27017
     steps:
       - uses: actions/checkout@v4
       
