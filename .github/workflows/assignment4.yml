@@ -8,12 +8,29 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Build stocks service
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+      
+      - name: Build stocks service with Maven
+        run: |
+          cd stocks
+          mvn clean package -DskipTests
+      
+      - name: Build capital gains service with Maven
+        run: |
+          cd capitalgains
+          mvn clean package -DskipTests
+      
+      - name: Build stocks service Docker image
         run: |
           cd stocks
           docker build -t stocks-service .
       
-      - name: Build capital gains service
+      - name: Build capital gains service Docker image
         run: |
           cd capitalgains
           docker build -t capital-gains-service .
@@ -60,7 +77,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pytest requests
+          pip install pytest requests pymongo
       
       - name: Start services
         run: |
@@ -110,7 +127,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install requests
+          pip install requests pymongo
       
       - name: Start services
         run: |
