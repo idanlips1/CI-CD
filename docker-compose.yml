@@ -1,7 +1,7 @@
 services:
   stocks1:
     build:
-      context: ./stockapi_updated
+      context: stocks
     container_name: stocks1
     ports:
       - "5001:8000"
