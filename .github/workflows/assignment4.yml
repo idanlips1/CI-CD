@@ -8,6 +8,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
+      - name: Start logging
+        run: |
+          echo "$(date -Iminutes)" > log.txt
+          echo "Idan Lipschitz" >> log.txt
+      
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
@@ -23,26 +28,39 @@ jobs:
         working-directory: ./capitalgains
         run: mvn clean package -DskipTests
       
-      - name: Build stocks service Docker image
-        working-directory: ./stocks
-        run: docker build -t ci-cd-stocks1 .
-      
-      - name: Build capital gains service Docker image
-        working-directory: ./capitalgains
-        run: docker build -t ci-cd-capital-gains .
+      - name: Build Docker images
+        id: build_images
+        run: |
+          if docker build -t ci-cd-stocks1 ./stocks && docker build -t ci-cd-capital-gains ./capitalgains; then
+            echo "image successfully built" >> log.txt
+            echo "build_success=true" >> $GITHUB_OUTPUT
+          else
+            echo "image not able to be built" >> log.txt
+            echo "build_success=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
       
       - name: Save Docker images
+        if: steps.build_images.outputs.build_success == 'true'
         run: |
           docker save ci-cd-stocks1 > stocks-service.tar
           docker save ci-cd-capital-gains > capital-gains-service.tar
       
       - name: Upload Docker images as artifacts
+        if: steps.build_images.outputs.build_success == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: docker-images
           path: |
             stocks-service.tar
             capital-gains-service.tar
+      
+      - name: Upload log file
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: workflow-logs
+          path: log.txt
 
   test:
     needs: build
@@ -50,6 +68,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: workflow-logs
+          
       - name: Download Docker images
         uses: actions/download-artifact@v4
         with:
@@ -71,13 +94,24 @@ jobs:
           pip install pytest requests pymongo
       
       - name: Start services
+        id: start_services
         run: |
-          docker compose up -d --no-build
-          sleep 30
+          if docker compose up -d --no-build; then
+            echo "Container up and running" >> log.txt
+            exit 0
+          else
+            echo "Container failed to run" >> log.txt
+            exit 1
+          fi
       
       - name: Run tests
+        id: run_tests
         run: |
-          pytest -v tests/assn4_tests.py | tee assn4_test_results.txt
+          if pytest -v tests/assn4_tests.py | tee assn4_test_results.txt; then
+            echo "tests succeeded" >> log.txt
+          else
+            echo "tests failed" >> log.txt
+          fi
         continue-on-error: true
       
       - name: Upload test results
@@ -86,7 +120,15 @@ jobs:
           name: test-results
           path: assn4_test_results.txt
       
+      - name: Upload updated log file
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: workflow-logs
+          path: log.txt
+      
       - name: Stop services
+        if: always()
         run: docker compose down
 
   query:
@@ -95,6 +137,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: workflow-logs
+          
       - name: Download Docker images
         uses: actions/download-artifact@v4
         with:
@@ -129,5 +176,13 @@ jobs:
           name: query-results
           path: response.txt
       
+      - name: Upload final log file
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: workflow-logs
+          path: log.txt
+      
       - name: Stop services
+        if: always()
         run: docker compose down
