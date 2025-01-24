@@ -25,16 +25,16 @@ jobs:
       
       - name: Build stocks service Docker image
         working-directory: ./stocks
-        run: docker build -t stocks-service .
+        run: docker build -t stocks1 .
       
       - name: Build capital gains service Docker image
         working-directory: ./capitalgains
-        run: docker build -t capital-gains-service .
+        run: docker build -t capital-gains .
       
       - name: Save Docker images
         run: |
-          docker save stocks-service > stocks-service.tar
-          docker save capital-gains-service > capital-gains-service.tar
+          docker save stocks1 > stocks-service.tar
+          docker save capital-gains > capital-gains-service.tar
       
       - name: Upload Docker images as artifacts
         uses: actions/upload-artifact@v4
@@ -77,8 +77,8 @@ jobs:
       
       - name: Start services
         run: |
-          docker compose up -d
-          sleep 30  # Wait for services to be ready
+          docker compose up -d --no-build
+          sleep 30
       
       - name: Run tests
         run: |
@@ -127,8 +127,8 @@ jobs:
       
       - name: Start services
         run: |
-          docker compose up -d
-          sleep 30  # Wait for services to be ready
+          docker compose up -d --no-build
+          sleep 30
       
       - name: Run queries
         run: python tests/query_executor.py
