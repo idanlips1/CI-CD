@@ -105,7 +105,7 @@ public class StockService {
 
 
 
-        return result;
+            return result;
     }
 
     private float getPortfolioValue() throws Exception{
@@ -113,7 +113,7 @@ public class StockService {
         List <Stock> result = getAllStocks();
         for (Stock stock : result){
             value += getStockValue(stock.getId()).getStockValue();
-        }
+                }
 
         return value;
     }
