@@ -104,8 +104,8 @@ def main():
     """Main function to run the query execution process"""
     print("Starting query execution process...")
     
-    #print("\nPosting initial stocks...")
-    #post_initial_stocks()
+    print("\nPosting initial stocks...")
+    post_initial_stocks()
     
     print("\nProcessing queries...")
     process_queries()
