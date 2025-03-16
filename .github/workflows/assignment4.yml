@@ -193,7 +193,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: query-results
-          path: tests/response.txt
+          path: response.txt
       
       - name: Upload final log file
         if: always()

@@ -6,6 +6,27 @@ import os
 STOCKS_URL = "http://localhost:5001"
 CAPITAL_GAINS_URL = "http://localhost:5003"
 
+def find_query_file():
+    """Find query.txt in various possible locations"""
+    # List of possible locations to check
+    possible_locations = [
+        'query.txt',  # Current directory
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), 'query.txt'),  # tests directory
+        '../query.txt'  # Parent directory
+    ]
+    
+    for location in possible_locations:
+        print(f"Looking for query.txt in: {os.path.abspath(location)}")
+        if os.path.exists(location):
+            print(f"Found query.txt at: {os.path.abspath(location)}")
+            return location
+            
+    print("ERROR: query.txt not found in any of the expected locations!")
+    print("Looked in:")
+    for location in possible_locations:
+        print(f"- {os.path.abspath(location)}")
+    return None
+
 def post_initial_stocks():
     """Post the 6 required stocks"""
     stocks = [
@@ -74,9 +95,14 @@ def execute_query(service, query_string):
 
 def process_queries():
     """Process queries from query.txt and write results to response.txt"""
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    query_path = os.path.join(script_dir, 'query.txt')
-    response_path = os.path.join(script_dir, 'response.txt')
+    query_path = find_query_file()
+    if not query_path:
+        print("Cannot proceed without query.txt")
+        exit(1)
+        
+    # Always write response.txt to current directory for GitHub Actions to find it
+    response_path = 'response.txt'
+    print(f"Writing responses to: {os.path.abspath(response_path)}")
     
     with open(query_path, 'r') as query_file, open(response_path, 'w') as response_file:
         for line in query_file:
