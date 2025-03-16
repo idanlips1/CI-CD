@@ -1,0 +1,4 @@
+stocks:symbol=MSFT
+stocks:shares=35
+capital-gains:numsharesgt=15
+capital-gains:portfolio-value
