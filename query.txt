@@ -5,3 +5,6 @@ capital-gains:numsharesgt=15
 capital-gains:numshareslt=10
 capital-gains:shares=7
 capital-gains:portfolio-value
+stocks:symbol=NVDA
+stocks:symbol=AAPL
+capital-gains:portfolio=true
