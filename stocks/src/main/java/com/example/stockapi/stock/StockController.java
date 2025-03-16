@@ -24,8 +24,8 @@ public class StockController {
     public ResponseEntity<Map<String, String>> addStock(@RequestBody Stock stock) {
         try {
             if (!stock.isPostValid()) {
-                return new ResponseEntity<>(Map.of("error", "Expected application/json media type"),
-                        HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+                return new ResponseEntity<>(Map.of("error", "Malformed data"),
+                        HttpStatus.BAD_REQUEST);
             }
             List<Stock> temp = stockService.getAllStocks();
             for (int i = 0; i < temp.size(); i++) {

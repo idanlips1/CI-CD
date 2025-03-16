@@ -97,7 +97,8 @@ public class Stock {
         return
                  isNotEmpty(this.getSymbol())
                 && this.getPrice() > 0 // Assuming price should be greater than 0
-                && this.getShares() >= 0; // Assuming shares should be greater than 0
+                && this.getShares() >= 0 // Assuming shares should be greater than 0
+                && isValidDate(this.getPurchaseDate()); // Add date validation
     }
 
     // Helper method to check if a String is null or empty
@@ -105,7 +106,26 @@ public class Stock {
         return str != null && !str.trim().isEmpty();
     }
 
-    
+    // Helper method to validate date format (dd-MM-yyyy)
+    private boolean isValidDate(String dateStr) {
+        if (dateStr == null || dateStr.trim().isEmpty()) {
+            return false;
+        }
+        try {
+            String[] parts = dateStr.split("-");
+            if (parts.length != 3) return false;
+            
+            int day = Integer.parseInt(parts[0]);
+            int month = Integer.parseInt(parts[1]);
+            int year = Integer.parseInt(parts[2]);
+            
+            return day >= 1 && day <= 31 && 
+                   month >= 1 && month <= 12 && 
+                   year >= 2000;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 
     @Override
     public String toString() {

@@ -5,6 +5,12 @@ stocks:symbol=TSLA
 stocks:symbol=MSFT
 stocks:symbol=INTC
 stocks:all=true
+stocks:shares=14
+stocks:shares=100
 capital-gains:symbol=NVDA
 capital-gains:symbol=AAPL
-capital-gains:portfolio=true 
+capital-gains:numsharesgt=15
+capital-gains:numshareslt=10
+capital-gains:shares=7
+capital-gains:portfolio=true
+capital-gains:portfolio-value

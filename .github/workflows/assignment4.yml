@@ -99,6 +99,16 @@ jobs:
         run: |
           if docker compose up -d --no-build; then
             echo "Container up and running" >> log.txt
+            echo "Waiting for services to be ready..."
+            sleep 30
+            echo "Docker containers status:"
+            docker ps -a
+            echo "Docker logs for stocks service:"
+            docker logs stocks1
+            echo "Docker logs for capital gains service:"
+            docker logs capital-gains
+            echo "Docker logs for MongoDB:"
+            docker logs mongo
             exit 0
           else
             echo "Container failed to run" >> log.txt
@@ -108,10 +118,16 @@ jobs:
       - name: Run tests
         id: run_tests
         run: |
-          if pytest -v tests/assn4_tests.py | tee assn4_test_results.txt; then
+          echo "Testing connection to services..."
+          curl -v http://localhost:5001/stocks || true
+          echo "\nRunning tests..."
+          pytest -v tests/assn4_tests.py | tee assn4_test_results.txt
+          if [ ${PIPESTATUS[0]} -eq 0 ]; then
             echo "tests succeeded" >> log.txt
           else
             echo "tests failed" >> log.txt
+            echo "\nTest failures:" >> log.txt
+            cat assn4_test_results.txt >> log.txt
           fi
         continue-on-error: true
       

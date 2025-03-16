@@ -83,24 +83,24 @@ public class StockService {
         StockValueResponse result = new StockValueResponse();
 
 
-            var headers = new org.springframework.http.HttpHeaders();
-            headers.set("X-Api-Key", API_KEY);
+        var headers = new org.springframework.http.HttpHeaders();
+        headers.set("X-Api-Key", API_KEY);
 
-            var entity = new org.springframework.http.HttpEntity<>(headers);
-            var response = restTemplate.exchange(apiURL, org.springframework.http.HttpMethod.GET, entity, String.class);
+        var entity = new org.springframework.http.HttpEntity<>(headers);
+        var response = restTemplate.exchange(apiURL, org.springframework.http.HttpMethod.GET, entity, String.class);
 
-            String responseBody = response.getBody();
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readTree(responseBody);
+        String responseBody = response.getBody();
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode node = mapper.readTree(responseBody);
 
 
 
-            double ticker = Double.parseDouble(node.get("price").toString());
-            double stockValue = ticker * stock.getShares();
+        double ticker = Double.parseDouble(node.get("price").toString());
+        double stockValue = ticker * stock.getShares();
 
-            result.setTicker((float) ticker);
-            result.setSymbol(stock.getSymbol());
-            result.setStockValue((float) stockValue);
+        result.setTicker((float) ticker);
+        result.setSymbol(stock.getSymbol());
+        result.setStockValue((float) stockValue);
 
 
 
@@ -112,7 +112,7 @@ public class StockService {
         float value = 0;
         List <Stock> result = getAllStocks();
         for (Stock stock : result){
-            value += getStockValue(stock.getId()).getStockValue();
+            value += getStockValue(stock.getId()).getTicker();
         }
 
         return value;
