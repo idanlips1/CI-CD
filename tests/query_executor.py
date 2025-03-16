@@ -8,12 +8,18 @@ CAPITAL_GAINS_URL = "http://localhost:5003"
 
 def find_query_file():
     """Find query.txt in various possible locations"""
+    # Get the GitHub workspace directory if we're in GitHub Actions
+    github_workspace = os.getenv('GITHUB_WORKSPACE')
+    
     # List of possible locations to check
     possible_locations = [
         'query.txt',  # Current directory
         os.path.join(os.path.dirname(os.path.abspath(__file__)), 'query.txt'),  # tests directory
-        '../query.txt'  # Parent directory
     ]
+    
+    # If we're in GitHub Actions, also check the workspace root
+    if github_workspace:
+        possible_locations.append(os.path.join(github_workspace, 'query.txt'))
     
     for location in possible_locations:
         print(f"Looking for query.txt in: {os.path.abspath(location)}")
