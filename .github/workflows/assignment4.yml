@@ -122,14 +122,15 @@ jobs:
           curl -v http://localhost:5001/stocks || true
           echo "\nRunning tests..."
           pytest -v tests/assn4_tests.py | tee assn4_test_results.txt
-          if [ ${PIPESTATUS[0]} -eq 0 ]; then
+          test_exit_code=${PIPESTATUS[0]}
+          if [ $test_exit_code -eq 0 ]; then
             echo "tests succeeded" >> log.txt
           else
             echo "tests failed" >> log.txt
             echo "\nTest failures:" >> log.txt
             cat assn4_test_results.txt >> log.txt
+            exit 1
           fi
-        continue-on-error: true
       
       - name: Upload test results
         uses: actions/upload-artifact@v4
