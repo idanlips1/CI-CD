@@ -1,0 +1,10 @@
+stocks:symbol=NVDA
+stocks:symbol=AAPL
+stocks:symbol=GOOG
+stocks:symbol=TSLA
+stocks:symbol=MSFT
+stocks:symbol=INTC
+stocks:all=true
+capital-gains:symbol=NVDA
+capital-gains:symbol=AAPL
+capital-gains:portfolio=true 
